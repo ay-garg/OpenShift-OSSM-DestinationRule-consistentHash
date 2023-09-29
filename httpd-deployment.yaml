@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: httpd
+  name: httpd
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      deployment: httpd
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        deployment: httpd
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+      - image: registry.redhat.io/rhel8/httpd-24
+        command: ["/bin/sh"]
+        args: ["-c", "sleep 5 && hostname > /var/www/html/index.html && /usr/bin/run-httpd"]
+        imagePullPolicy: IfNotPresent
+        name: httpd-24
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+      securityContext:
+        runAsUser: 0

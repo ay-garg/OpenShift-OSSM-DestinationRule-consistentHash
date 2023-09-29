@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: httpd-destination-rule 
+spec:
+  host: httpd.consistenthash.svc.cluster.local 
+  subsets:
+  - labels:
+      deployment: httpd
+    name: httpd
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpCookie:
+          name: APP_SESSION_ID 
+          ttl: 900s

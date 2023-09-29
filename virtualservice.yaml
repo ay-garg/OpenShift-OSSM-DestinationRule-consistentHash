@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: httpd-virtual-service
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - httpd-gateway 
+  http:
+    - route:
+        - destination:
+            host: httpd 
+            port:
+               number: 8080
